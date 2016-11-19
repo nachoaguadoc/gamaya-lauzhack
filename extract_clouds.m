@@ -4,6 +4,8 @@
 clear all;
 close all;
 hyperIm = imread('ortho.tif');
+hyperIm = hyperIm(1:1000, 1500:3000, :);
+%hyperIm = hyperIm(1:1000, 1:1000, :);
 % First channel in monochromatic in the 470-650 nm range
 panChannel = hyperIm(:,:,1);
 % Image coming from the VIS camera 470-650 nm
@@ -25,7 +27,10 @@ refl = (refl - min(refl(:))) / (max(refl(:)) - min(refl(:)));
 rgb = refl(:,:,[16 8 2]);
 rgb(:) = imadjust(rgb(:),stretchlim(rgb(:),[.01 .99]));
 [N M B] = size(refl);
-
+figure;
+imshow(rgb);
+hold on;
+plot(669, 691, '*r')
 %% Generate shadow map
 % Currently computed as geometric mean of channels
 shadowMap = ones([N M]);
@@ -38,4 +43,27 @@ aux = shadowMap(alpha).^(1/B);
 shadowMap(alpha) = imadjust(aux,stretchlim(aux,[.1 .9999])); %Clouds are white
 
 %%  1st way: Mean for the selection area
-image_mask = extrac_clouds_mask( shadowMap );
+%image_mask = extrac_clouds_mask(shadowMap );
+%figure;
+%plot(reshape(refl(920, 1973, :),[41, 1, 1]).');
+%hold on;
+%plot(reshape(refl(1033, 2068, :),[41, 1, 1]).');
+%reshape(refl(1201, 2083, :), [41, 1, 1]).'; % Tierra con sol
+refl = rgb;
+a = reshape(refl(669, 691, :), [3, 1, 1]).';
+[W H D] = size(refl);
+class_m = zeros(W,H);
+for w = 1:W
+   for h = 1:H
+       matrix_cc = corrcoef(a, reshape(refl(w, h, :),[3, 1, 1]).');
+       if  matrix_cc(2,1) > 0.99
+           class_m(w, h) = 1;
+       end       
+   end
+end
+figure;
+imshow(class_m * 100);
+hold on;
+plot(669, 691, '*r');
+legend('Mucha', 'Poca', 'Nada/SOL :D');
+
