@@ -50,20 +50,28 @@ shadowMap(alpha) = imadjust(aux,stretchlim(aux,[.1 .9999])); %Clouds are white
 %plot(reshape(refl(1033, 2068, :),[41, 1, 1]).');
 %reshape(refl(1201, 2083, :), [41, 1, 1]).'; % Tierra con sol
 refl = rgb;
-a = reshape(refl(669, 691, :), [3, 1, 1]).';
-[W H D] = size(refl);
-class_m = zeros(W,H);
-for w = 1:W
-   for h = 1:H
-       matrix_cc = corrcoef(a, reshape(refl(w, h, :),[3, 1, 1]).');
-       if  matrix_cc(2,1) > 0.99
-           class_m(w, h) = 1;
-       end       
-   end
+pixels = [669 691];
+
+materials = [];
+for i=1:size(pixels(1))
+    i
+    a = reshape(refl(pixels(i,1), pixels(i,2), :), [3, 1, 1]).';
+    [W H D] = size(refl);
+    class_m = zeros(W,H);
+    
+    for w = 1:W
+       for h = 1:H
+           matrix_cc = corrcoef(a, reshape(refl(w, h, :),[3, 1, 1]).');
+           if  matrix_cc(2,1) > 0.99
+               class_m(w, h) = 1;
+           end       
+       end
+    end
+    materials = [materials; class_m];
+    figure;
+    imshow(class_m * 100);
+    hold on;
+    plot(669, 691, '*r');
+    legend('Mucha', 'Poca', 'Nada/SOL :D');
 end
-figure;
-imshow(class_m * 100);
-hold on;
-plot(669, 691, '*r');
-legend('Mucha', 'Poca', 'Nada/SOL :D');
 
