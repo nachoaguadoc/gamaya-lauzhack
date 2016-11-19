@@ -51,7 +51,7 @@ shadowMap(alpha) = imadjust(aux,stretchlim(aux,[.1 .9999])); %Clouds are white
 %reshape(refl(1201, 2083, :), [41, 1, 1]).'; % Tierra con sol
 refl = rgb;
 pixels = [669 691];
-
+% I wanna die.
 materials = [];
 for i=1:size(pixels(1))
     i
