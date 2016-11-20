@@ -7,7 +7,7 @@ function [ BW2 ] = extrac_clouds_mask( shadowMap )
     mask_SHW = ones( size( shadowMap));
     mask_SHW ( find( shadowMap <= (mean_SM + std_SM))) = 0;
     BW2 = bwareaopen(mask_SHW, 4000);
-    BW2 = rangefilt(shadowMap);
+    %BW2 = rangefilt(shadowMap);
     figure
     imshowpair(mask_SHW,BW2,'montage')
 end
